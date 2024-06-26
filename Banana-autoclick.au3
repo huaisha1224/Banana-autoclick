@@ -1,16 +1,16 @@
 #Region ;**** Directives created by AutoIt3Wrapper_GUI ****
 #AutoIt3Wrapper_Icon=favicon.ico
-#AutoIt3Wrapper_Res_Comment=èµ›åšæ¸¸æˆè¿ç‚¹å™¨
-#AutoIt3Wrapper_Res_Description=è‡ªåŠ¨æ£€æµ‹å¹¶ç‚¹å‡»Bananaã€Burgerã€Eggã€Catsæ¸¸æˆçª—å£
-#AutoIt3Wrapper_Res_Fileversion=2024.6.21.2
-#AutoIt3Wrapper_Res_ProductVersion=1.0.1
-#AutoIt3Wrapper_Res_LegalCopyright=æ€€æ²™2049
+#AutoIt3Wrapper_Res_Comment=Èü²©ÓÎÏ·Á¬µãÆ÷
+#AutoIt3Wrapper_Res_Description=×Ô¶¯¼ì²â²¢µã»÷Banana¡¢Burger¡¢Egg¡¢CatsÓÎÏ·´°¿Ú
+#AutoIt3Wrapper_Res_Fileversion=2024.6.25.1
+#AutoIt3Wrapper_Res_ProductVersion=1.0.2
+#AutoIt3Wrapper_Res_LegalCopyright=»³É³2049
 #AutoIt3Wrapper_Res_SaveSource=y
 #AutoIt3Wrapper_Res_requestedExecutionLevel=None
-#AutoIt3Wrapper_Res_Field=ProductName|èµ›åšæ¸¸æˆè¿ç‚¹å™¨
+#AutoIt3Wrapper_Res_Field=ProductName|Èü²©ÓÎÏ·Á¬µãÆ÷
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
-#Region ;**** å‚æ•°åˆ›å»ºäº ACNWrapper_GUI ****
-#EndRegion ;**** å‚æ•°åˆ›å»ºäº ACNWrapper_GUI ****
+#Region ;**** ²ÎÊı´´½¨ÓÚ ACNWrapper_GUI ****
+#EndRegion ;**** ²ÎÊı´´½¨ÓÚ ACNWrapper_GUI ****
 #NoTrayIcon
 #RequireAdmin
 
@@ -20,109 +20,115 @@
 #include <WindowsConstants.au3>
 #include <Misc.au3>
 
-Global $hGUI, $btnStart, $btnStop, $btnAbout, $lblDescription, $isClicking, $hWnd, $windowSize, $GameName, $counter = 0 ,$isRunning 
-Global $gameNames[4] = ["Banana", "Burger", "Egg", "Cats"] ; å…¨å±€æ¨¡å¼å£°æ˜æ¸¸æˆåç§°åˆ—è¡¨
-$isRunning = False  ;æ·»åŠ å…¨å±€å˜é‡è¡¨ç¤ºè¿è¡ŒçŠ¶æ€
+Global $hGUI, $btnStart, $btnStop, $btnAbout, $lblDescription, $isClicking, $hWnd, $windowSize, $GameName, $counter = 0 ,$isRunning, $comboDelay
+Global $gameNames[4] = ["Banana", "Burger", "Egg", "Cats"] ; È«¾ÖÄ£Ê½ÉùÃ÷ÓÎÏ·Ãû³ÆÁĞ±í
+$isRunning = False  ;Ìí¼ÓÈ«¾Ö±äÁ¿±íÊ¾ÔËĞĞ×´Ì¬
 
 Func GatGameWindowSize($GameName)
-    ;é€šè¿‡ä¼ å…¥çš„æ¸¸æˆçª—å£åè·å–æ¸¸æˆçš„å¥æŸ„ï¼Œæœ€ç»ˆè·å–æ¸¸æˆçš„çª—å£åæ ‡    
-    $hWnd = 0 ; åˆå§‹åŒ–çª—å£å¥æŸ„ä¸ºæœªæ‰¾åˆ°
+    ;Í¨¹ı´«ÈëµÄÓÎÏ·´°¿ÚÃû»ñÈ¡ÓÎÏ·µÄ¾ä±ú£¬×îÖÕ»ñÈ¡ÓÎÏ·µÄ´°¿Ú×ø±ê    
+    $hWnd = 0 ; ³õÊ¼»¯´°¿Ú¾ä±úÎªÎ´ÕÒµ½
     $hWnd = WinGetHandle($GameName)
-    WinActivate($GameName)  ;æ¿€æ´»çª—å£
-    ;ConsoleWrite("æ¸¸æˆåç§°ï¼š" &$GameName & "æ¸¸æˆå¥æŸ„ï¼š"& $hWnd &@CRLF)
+    WinActivate($GameName)  ;¼¤»î´°¿Ú
+    ;ConsoleWrite("ÓÎÏ·Ãû³Æ£º" &$GameName & "ÓÎÏ·¾ä±ú£º"& $hWnd &@CRLF)
     If $hWnd <> 0 Then
-        ; å¦‚æœæ‰¾åˆ°çª—å£å¥æŸ„ï¼Œå°±è·å–æ¸¸æˆçš„å½“å‰åæ ‡å’Œæ¸¸æˆçª—å£çš„å¤§å°
+        ; Èç¹ûÕÒµ½´°¿Ú¾ä±ú£¬¾Í»ñÈ¡ÓÎÏ·µÄµ±Ç°×ø±êºÍÓÎÏ·´°¿ÚµÄ´óĞ¡
         $windowSize = WinGetPos($GameName)
-        ClickAtGameCenter($windowSize)  ;æ‰§è¡Œç‚¹å‡»
-        ;ConsoleWrite("X - åæ ‡: " & $windowSize[0] & @CRLF & "Y - åæ ‡: " & $windowSize[1] & @CRLF & "å®½åº¦: " & $windowSize[2] & @CRLF & "é«˜åº¦: " & $windowSize[3])
-        Sleep(10000) ;å¯é€‰çš„å»¶æ—¶
+        ClickAtGameCenter($windowSize)  ;Ö´ĞĞµã»÷
+        ;ConsoleWrite("X - ×ø±ê: " & $windowSize[0] & @CRLF & "Y - ×ø±ê: " & $windowSize[1] & @CRLF & "¿í¶È: " & $windowSize[2] & @CRLF & "¸ß¶È: " & $windowSize[3])
+        ;Sleep(10000) ;¿ÉÑ¡µÄÑÓÊ±
+		Local $delay = GUICtrlRead($comboDelay) * 1000 ; ´ÓÏÂÀ­Ñ¡Ôñ¿òÖĞ¶ÁÈ¡ÑÓ³ÙÊ±¼ä²¢×ª»»ÎªºÁÃë
+		ConsoleWrite("ÑÓ³ÙÊ±¼ä£º"& $delay & @CRLF)
+		Sleep($delay) ; Ê¹ÓÃÓÃ»§Ñ¡ÔñµÄÑÓ³ÙÊ±¼ä
         Return $windowSize
     EndIf
 EndFunc
 
 Func ClickAtGameCenter($windowSize)
-    ;é€šè¿‡Xå’ŒYåæ ‡ä»¥åŠæ¸¸æˆçª—å£çš„å®½åº¦å’Œé«˜åº¦è®¡ç®—ç‚¹å‡»ä½ç½®å¹¶æ‰§è¡Œç‚¹å‡»æ“ä½œ
-	;ConsoleWrite("ç‚¹å‡»æ¸¸æˆï¼š" &$GameName)
+    ;Í¨¹ıXºÍY×ø±êÒÔ¼°ÓÎÏ·´°¿ÚµÄ¿í¶ÈºÍ¸ß¶È¼ÆËãµã»÷Î»ÖÃ²¢Ö´ĞĞµã»÷²Ù×÷
+	;ConsoleWrite("µã»÷ÓÎÏ·£º" &$GameName)
 	Local $clickX = $windowSize[0] + $windowSize[2] / 2
 	Local $clickY = $windowSize[1] + $windowSize[3] / 2
 	MouseClick("left", $clickX+20, $clickY+40) 
 EndFunc
 
 Func GetGameName()
-    ; å•æ¬¡æ‰§è¡Œé€»è¾‘ï¼Œä¸æ¶‰åŠå¾ªç¯ï¼Œè¾“å‡ºæ¸¸æˆåç§°
+    ; µ¥´ÎÖ´ĞĞÂß¼­£¬²»Éæ¼°Ñ­»·£¬Êä³öÓÎÏ·Ãû³Æ
     If $counter >= UBound($gameNames) Then
-        $counter = 0; é‡ç½®è®¡æ•°å™¨
+        $counter = 0; ÖØÖÃ¼ÆÊıÆ÷
     EndIf
     $GameName = $gameNames[$counter];
-    GatGameWindowSize($GameName); è°ƒç”¨è·å–æ¸¸æˆå¥æŸ„å’Œåæ ‡å‡½æ•°
-    $counter += 1; åœ¨ç¡®ä¿ç´¢å¼•æœ‰æ•ˆåæ‰å¢åŠ è®¡æ•°å™¨
+    GatGameWindowSize($GameName); µ÷ÓÃ»ñÈ¡ÓÎÏ·¾ä±úºÍ×ø±êº¯Êı
+    $counter += 1; ÔÚÈ·±£Ë÷ÒıÓĞĞ§ºó²ÅÔö¼Ó¼ÆÊıÆ÷
 EndFunc
 
 Func MainLoop()
-    ;ä¸»å¾ªç¯ï¼Œåœ¨æ‰§è¡ŒæœŸé—´ä¸æ–­è°ƒç”¨ GetGameNameï¼Œç›´åˆ° isRunning ä¸º False
+    ;Ö÷Ñ­»·£¬ÔÚÖ´ĞĞÆÚ¼ä²»¶Ïµ÷ÓÃ GetGameName£¬Ö±µ½ isRunning Îª False
     While $isRunning
         GetGameName()
-        Sleep(100) ; åˆé€‚çš„å»¶æ—¶ï¼Œé¿å…å ç”¨è¿‡å¤š CPU èµ„æº
+        Sleep(100) ; ºÏÊÊµÄÑÓÊ±£¬±ÜÃâÕ¼ÓÃ¹ı¶à CPU ×ÊÔ´
         If Not $isRunning Then ExitLoop
     WEnd
 EndFunc
 
 Func StartClicker()
-	;å¼€å§‹å‡½æ•°
-    $isRunning = True ; å¼€å§‹æŒ‰é’®ç‚¹å‡»åè®¾ç½®ä¸º True
-    AdlibRegister("MainLoop", 100) ;æ¯ 100ms è°ƒç”¨ä¸€æ¬¡ MainLoop
+	;¿ªÊ¼º¯Êı
+    $isRunning = True ; ¿ªÊ¼°´Å¥µã»÷ºóÉèÖÃÎª True
+    AdlibRegister("MainLoop", 100) ;Ã¿ 100ms µ÷ÓÃÒ»´Î MainLoop
 EndFunc
 
 Func StopClicker()
-	;æš‚åœå‡½æ•°
-	;ConsoleWrite("è¿›å…¥æš‚åœçŠ¶æ€: "& @CRLF)
-    $isRunning = False ; åœæ­¢æŒ‰é’®ç‚¹å‡»åè®¾ç½®ä¸º False
+	;ÔİÍ£º¯Êı
+	ConsoleWrite("½øÈëÔİÍ£×´Ì¬: "& @CRLF)
+    $isRunning = False ; Í£Ö¹°´Å¥µã»÷ºóÉèÖÃÎª False
     AdlibUnRegister("MainLoop")
 EndFunc
 
 Func ExitApp()
-    ;é€€å‡ºå‡½æ•°
-    ;ConsoleWrite("è¿›å…¥é€€å‡ºå¾ªç¯: "& @CRLF)
-    StopClicker()  ; ç¡®ä¿åœæ­¢æ‰€æœ‰æ“ä½œå†é€€å‡º
+    ;ÍË³öº¯Êı
+    ConsoleWrite("½øÈëÍË³öÑ­»·: "& @CRLF)
+    StopClicker()  ; È·±£Í£Ö¹ËùÓĞ²Ù×÷ÔÙÍË³ö
     GUIDelete($hGUI)
     Exit
 EndFunc
 
 Func OpenAboutURL()
-    ;æ‰“å¼€Urlå‡½æ•°
+    ;´ò¿ªUrlº¯Êı
     ShellExecute('https://www.bilibili.com/video/BV1vf421Q7xS/')
 EndFunc
 
 Func CreateGUI()
-	; åˆ›å»º GUI ç•Œé¢  
-	$hGUI = GUICreate("èµ›åšæ¸¸æˆè¿ç‚¹å™¨        Byï¼šæ€€æ²™2049", 400, 210)  
-	Opt('GuiOneventmode', 1) ; å¼€å¯GUIäº‹ä»¶é©±åŠ¨æ¨¡å¼
+	; ´´½¨ GUI ½çÃæ  
+	$hGUI = GUICreate("Èü²©ÓÎÏ·Á¬µãÆ÷ 1.0.2        By£º»³É³2049", 400, 210)
+	Opt('GuiOneventmode', 1) ; ¿ªÆôGUIÊÂ¼şÇı¶¯Ä£Ê½
 	GUISetOnEvent($GUI_EVENT_CLOSE, "ExitApp")  
-	GUISetIcon(@ScriptDir & "\favicon.ico") ; å‡è®¾ favicon.ico ä¸è„šæœ¬ä½äºåŒä¸€ç›®å½•ä¸‹  
+	GUISetIcon(@ScriptDir & "\favicon.ico") ; ¼ÙÉè favicon.ico Óë½Å±¾Î»ÓÚÍ¬Ò»Ä¿Â¼ÏÂ  
 	
+	; ÉèÖÃÏÂÀ­¿òµÄÑ¡ÏîÎª1µ½10Ãë
+	GUICtrlCreateLabel("µã»÷ÆµÂÊ£º", 20, 158, 150, 30)
+	$comboDelay = GUICtrlCreateCombo("5", 20, 180, 50, 30)	;Ä¬ÈÏ5
+	GUICtrlSetData(-1, "1|2|3|4|5|6|7|8|9|10") 
 
-	$btnStart = GUICtrlCreateButton("å¼€å§‹", 20, 155, 80, 30)
+	$btnStart = GUICtrlCreateButton("¿ªÊ¼", 100, 171, 50, 30)
 	GUICtrlSetOnEvent(-1, "StartClicker")
 	
-	$btnStop = GUICtrlCreateButton("åœæ­¢", 140, 155, 80, 30)
+	$btnStop = GUICtrlCreateButton("Í£Ö¹", 190, 171, 50, 30)
 	GUICtrlSetOnEvent(-1, "StopClicker")
 	
-	$btnAbout = GUICtrlCreateButton("å…³äº", 260, 155, 80, 30)  
+	$btnAbout = GUICtrlCreateButton("¹ØÓÚ", 280, 171, 50, 30)  
 	GUICtrlSetOnEvent(-1, "OpenAboutURL")
 	
-	
-	$lblDescription = GUICtrlCreateEdit(""&@CRLF& "ç¡®ä¿æ¸¸æˆå·²å¯åŠ¨"&@CRLF& _
-					""&@CRLF& "ç‚¹å‡»å¼€å§‹åï¼Œè‡ªåŠ¨æ£€æµ‹å¹¶ç‚¹å‡»æ¸¸æˆçª—å£"&@CRLF& _
-					""&@CRLF& "æ”¯æŒåŒæ—¶ç‚¹å‡»Banana, Burger, Egg, Catsæ¸¸æˆ"&@CRLF& _
-					""&@CRLF& "æŒ‰ESCæŒ‰é”®å¯ä»¥ç›´æ¥é€€å‡ºç¨‹åº"&@CRLF& _
+	$lblDescription = GUICtrlCreateEdit(""&@CRLF& "È·±£ÓÎÏ·ÒÑÆô¶¯"&@CRLF& _
+					""&@CRLF& "µã»÷¿ªÊ¼ºó£¬×Ô¶¯¼ì²â²¢µã»÷ÓÎÏ·´°¿Ú"&@CRLF& _
+					""&@CRLF& "Ö§³ÖÍ¬Ê±µã»÷Banana, Burger, Egg, CatsÓÎÏ·"&@CRLF& _
+					""&@CRLF& "°´ESC°´¼ü¿ÉÒÔÖ±½ÓÍË³ö³ÌĞò"&@CRLF& _
 					"" ,20, 20, 320, 135)
 
 	GUISetState(@SW_SHOW,$hGUI)
 EndFunc
 
-; ä¸»ç¨‹åºå…¥å£ï¼Œè°ƒç”¨ CreateGUIå‡½æ•°
+; Ö÷³ÌĞòÈë¿Ú£¬µ÷ÓÃ CreateGUIº¯Êı
 CreateGUI()
-; ä¿æŒè„šæœ¬æŒç»­è¿è¡Œç›´åˆ°æ”¶åˆ°é€€å‡ºä¿¡å·
+; ±£³Ö½Å±¾³ÖĞøÔËĞĞÖ±µ½ÊÕµ½ÍË³öĞÅºÅ
 While 1 
     Sleep(1000)
 WEnd
